@@ -1,7 +1,6 @@
-import { liftAction, unliftAction, lift } from 'redux-lift';
+import { lift } from 'redux-lift';
 import isPromise from 'is-promise';
 
-import { PASS_THROUGH } from './action-types';
 import { addPromise } from './actions';
 import waitReducer from './reducer';
 
@@ -10,16 +9,13 @@ import waitReducer from './reducer';
  *
  * @function
  *
- * @param {Object} childState The child store state
+ * @param {Object} child The child store state
  *
- * @param {Object} waitState  The `redux-wait` store state.
+ * @param {Object} wait  The `redux-wait` store state.
  *
  * @returns {Object} The composed state.
  */
-export const composeState = (childState, waitState) => ({
-  childState,
-  waitState,
-});
+export const composeState = (child, wait) => ({ child, wait });
 
 /**
  * Extract the child store state from a composed state object.
@@ -30,7 +26,7 @@ export const composeState = (childState, waitState) => ({
  *
  * @returns {Object} The child store state.
  */
-export const extractChildState = ({ childState }) => childState;
+export const extractChildState = ({ child }) => child;
 
 /**
  * Extract the `redux-wait` state from a composed state object.
@@ -41,7 +37,7 @@ export const extractChildState = ({ childState }) => childState;
  *
  * @returns {Object}               The `redux-wait` state.
  */
-export const extractWaitState = ({ waitState }) => waitState;
+export const extractWaitState = ({ wait }) => wait;
 
 /**
  * Update the `redux-wait` state.
@@ -50,13 +46,13 @@ export const extractWaitState = ({ waitState }) => waitState;
  *
  * @param {Object} composedState The composed state.
  *
- * @param {Object} waitState The new `redux-wait` state
+ * @param {Object} wait The new `redux-wait` state
  *
  * @returns {Object} The composed, updated state.
  */
-export const updateState = (composedState, waitState) => composeState(
+export const updateState = (composedState, wait) => composeState(
   extractChildState(composedState),
-  waitState,
+  wait,
 );
 
 /**
@@ -69,24 +65,10 @@ export const updateState = (composedState, waitState) => composeState(
  * @returns {Function} A function that lifts a `reducer` function.
  */
 export const createLiftReducer = (waitReducer) => (reducer) => {
-  const map = {
-    [PASS_THROUGH]: (state, action) => composeState(
-      reducer(extractChildState(state), unliftAction(action)),
-      extractWaitState(state)
-    ),
-    default: (state, action) => composeState(
-      reducer(extractChildState(state), action),
-      extractWaitState(state)
-    ),
-  };
-
-  return (state, action) => {
-    // run wait reducer
-    const reducedState = waitReducer(extractWaitState(state), action);
-    const composedState = composeState(extractChildState(state), reducedState);
-
-    return (map[action.type] || map.default)(composedState, action);
-  };
+  return (state, action) =>  composeState(
+    reducer(extractChildState(state), action),
+    waitReducer(extractWaitState(state), action),
+  );
 };
 
 /**
@@ -105,7 +87,7 @@ const createLiftDispatch = (handleAction) => (dispatch) => (action) => {
     dispatch(addPromise(promise));
   }
 
-  dispatch(liftAction(PASS_THROUGH, action));
+  dispatch(action);
 
   return action;
 };
