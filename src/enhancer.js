@@ -1,36 +1,38 @@
 import { liftAction, unliftAction, lift } from 'redux-lift';
 import isPromise from 'is-promise';
 
-import { PASS_THROUGH } from './action-types';
+import { INIT, PASS_THROUGH } from './action-types';
 import { addPromise } from './actions';
 import waitReducer from './reducer';
 
+export const isReduxAction = (action) => action.type.match(/$@@redux/);
+
 /**
- * Compose a child state and a `redux-wait` state into a single state object.
+ * Compose a parent state and a `redux-wait` state into a single state object.
  *
  * @function
  *
- * @param {Object} childState The child store state
+ * @param {Object} parentState The parent store state
  *
  * @param {Object} waitState  The `redux-wait` store state.
  *
  * @returns {Object} The composed state.
  */
-export const composeState = (childState, waitState) => ({
-  childState,
+export const composeState = (parentState, waitState) => ({
+  parentState,
   waitState,
 });
 
 /**
- * Extract the child store state from a composed state object.
+ * Extract the parent store state from a composed state object.
  *
  * @function
  *
  * @param {Object} composedState The composed state.
  *
- * @returns {Object} The child store state.
+ * @returns {Object} The parent store state.
  */
-export const extractChildState = ({ childState }) => childState;
+export const extractParentState = ({ parentState }) => parentState;
 
 /**
  * Extract the `redux-wait` state from a composed state object.
@@ -55,7 +57,7 @@ export const extractWaitState = ({ waitState }) => waitState;
  * @returns {Object} The composed, updated state.
  */
 export const updateState = (composedState, waitState) => composeState(
-  extractChildState(composedState),
+  extractParentState(composedState),
   waitState,
 );
 
@@ -69,23 +71,20 @@ export const updateState = (composedState, waitState) => composeState(
  * @returns {Function} A function that lifts a `reducer` function.
  */
 export const createLiftReducer = (waitReducer) => (reducer) => {
-  const map = {
-    [PASS_THROUGH]: (state, action) => composeState(
-      reducer(extractChildState(state), unliftAction(action)),
-      extractWaitState(state)
-    ),
-    default: (state, action) => composeState(
-      reducer(extractChildState(state), action),
-      extractWaitState(state)
-    ),
+  const parentReducer = (state, action) => {
+    const map = {
+      [PASS_THROUGH]: (state, action) => reducer(state, unliftAction(action)),
+      default: (state) => state,
+    };
+
+    return (map[action.type] || map.default)(state, action);
   };
 
   return (state, action) => {
-    // run wait reducer
-    const reducedState = waitReducer(extractWaitState(state), action);
-    const composedState = composeState(extractChildState(state), reducedState);
-
-    return (map[action.type] || map.default)(composedState, action);
+    return composeState(
+      parentReducer(extractParentState(state), action),
+      waitReducer(extractWaitState(state), action)
+    );
   };
 };
 
@@ -98,16 +97,20 @@ export const createLiftReducer = (waitReducer) => (reducer) => {
  *
  * @returns {Function} A function that lifts a `dispatch` function.
  */
-const createLiftDispatch = (handleAction) => (dispatch) => (action) => {
-  const promise = handleAction(action);
+const createLiftDispatch = (handleAction) => (dispatch) => {
+  dispatch(liftAction(PASS_THROUGH, { type: INIT }));
 
-  if (isPromise(promise)) {
-    dispatch(addPromise(promise));
-  }
+  return (action) => {
+    const promise = handleAction(action);
 
-  dispatch(liftAction(PASS_THROUGH, action));
+    if (isPromise(promise)) {
+      dispatch(addPromise(promise));
+    }
 
-  return action;
+    dispatch(liftAction(PASS_THROUGH, action));
+
+    return action;
+  };
 };
 
 /**
@@ -122,6 +125,6 @@ const createLiftDispatch = (handleAction) => (dispatch) => (action) => {
 export default ({ handleAction = ({ payload }) => payload } = {}) => lift({
   liftReducer: createLiftReducer(waitReducer),
   liftState: composeState,
-  unliftState: extractChildState,
+  unliftState: extractParentState,
   liftDispatch: createLiftDispatch(handleAction),
 });
