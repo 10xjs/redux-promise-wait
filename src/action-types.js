@@ -1,3 +1,3 @@
-export const PASS_THROUGH = '@@reduxWait/PASS_THROUGH';
-export const ADD_PROMISE = '@@reduxWait/ADD_PROMISE';
-export const CLEAR_PROMISES = '@@reduxWait/CLEAR_PROMISES';
+export const ADD_ACTION = 'ADD_ACTION';
+export const CLEAR_ACTIONS = 'CLEAR_ACTIONS';
+export const STATS = 'STATS';
