@@ -2,7 +2,7 @@
 
 A store enhancer for [Redux](https://github.com/rackt/redux).
 
-Collect and await the resolution of asyncronous actions dispatched from a single event.
+Collect and await the resolution of asynchronous actions dispatched from a single event.
 
 ### Installation
 
@@ -16,9 +16,9 @@ npm install --save redux redux-wait
 
 ### Rendering an async React app on the Server
 
-Redux Wait is used to run a callaback function repeatedly until the Redux store state settles when all chains of asyncronous actions have resolved.
+Redux Wait is used to run a callback function repeatedly until the Redux store state settles when all chains of asynchronous actions have resolved.
 
-Redux Wait includes two components which work together to acheieve this goal.
+Redux Wait includes two components which work together to achieve this goal.
 
  - `waitEnhancer()` creates Redux Store enhancer which collects promises from dispatched actions.
  - `createIterator()` creates callback iterator which acts on the collection of promises.
@@ -82,9 +82,9 @@ iterator().then((result) =>
 );
 ```
 
-> Any parameters passed to a call to the iterator are forwareded to the iterator callback. This is usefull for providing the local Redustore instance to a callback defined eslewhere.
+> Any parameters passed to a call to the iterator are forwarded to the iterator callback. This is useful for providing the local Redux store instance to a callback defined elsewhere.
 
-The example is complete with all necessart code moved inside an `http.Server` handler which returns the rendered result along with the frozen Redux store state for initialization on the client.
+The example is complete with all necessary code moved inside an `http.Server` handler which returns the rendered result along with the frozen Redux store state for initialization on the client.
 
 **`server.js`**
 
