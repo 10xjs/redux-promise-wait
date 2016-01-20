@@ -82,7 +82,7 @@ iterator().then((result) =>
 );
 ```
 
-> Any parameters passed to a call to the iterator are forwarded to the iterator callback. This is useful for providing the local Redux store instance to a callback defined elsewhere.
+> Any arguments passed to a call to the iterator are forwarded to the iterator callback. This is useful for providing the local Redux store instance to a callback defined elsewhere.
 
 The example is complete with all necessary code moved inside an `http.Server` handler which returns the rendered result along with the frozen Redux store state for initialization on the client.
 

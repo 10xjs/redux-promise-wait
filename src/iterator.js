@@ -33,47 +33,55 @@ const mapAction = ({ promise, action }) =>promise.then(
 export default (callback, store, {
   maxIterations = 2,
   storeName = 'waitStore',
-}) => (...args) => {
+} = {}) => {
   warning(
     maxIterations < 2,
     'A `maxIterations` value of less than 2 will not wait for any actions to ' +
     'resolve. Specify a higher value.'
   );
+
   const waitStore = store[storeName];
 
-  const iterate = (count = 0) => {
-    const start = Date.now();
+  warning(
+    !waitStore,
+    'The provided store must be created using the `waitEnhancer`.'
+  );
 
-    const renderResult = callback(...args);
+  return (...args) => {
+    const iterate = (count = 1) => {
+      const start = Date.now();
 
-    const { actions } = waitStore.getState();
-    waitStore.dispatch(clearActions());
+      const renderResult = callback(...args);
 
-    if (count < maxIterations) {
-      if (actions.length) {
-        return Promise.all(actions.map(mapAction))
-          .then((results) => {
-            const duration = Date.now() - start;
-            waitStore.dispatch(stats({
-              results,
-              duration,
-            }));
-            return iterate(count + 1);
-          });
+      const { actions } = waitStore.getState();
+      waitStore.dispatch(clearActions());
+
+      if (count < maxIterations) {
+        if (actions.length) {
+          return Promise.all(actions.map(mapAction))
+            .then((results) => {
+              const duration = Date.now() - start;
+              waitStore.dispatch(stats({
+                results,
+                duration,
+              }));
+              return iterate(count + 1);
+            });
+        }
+
+        return Promise.resolve(renderResult);
       }
 
+      warning(
+        actions.length,
+        'Callback completed with unresolved actions. Specify a higher ' +
+        'value for the `maxIterations` option or reduce the depth of async ' +
+        'action creator calls.'
+      );
+
       return Promise.resolve(renderResult);
-    }
+    };
 
-    warning(
-      actions.length,
-      'Callback completed with unresolved actions. Specify a higher ' +
-      'value for the `maxIterations` option or reduce the depth of async ' +
-      'action creator calls.'
-    );
-
-    return Promise.resolve(renderResult);
+    return iterate();
   };
-
-  return iterate();
 };
