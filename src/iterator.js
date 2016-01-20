@@ -20,19 +20,19 @@ const mapAction = ({ promise, action }) =>promise.then(
  *
  * @param {Object} store A redux store enhanced with `redux-wait`.
  *
- * @param {Number} options.limit The maximum number callback iterations.
+ * @param {Number} options.maxIterations The maximum number callback iterations.
  *
  * @param {Function} callback A callback function.
  *
  * @returns {Function} A function that returns a promise.
  */
-export default (store, {
-  limit = 2,
+export default (store, callback, {
+  maxIterations = 2,
   storeName = 'waitStore',
-}, callback) => (...args) =>{
+}) => (...args) =>{
   warning(
-    limit < 2,
-    'A `limit` value of less than 2 will not wait for any promises to ' +
+    maxIterations < 2,
+    'A `maxIterations` value of less than 2 will not wait for any promises to ' +
     'resolve. Specify a higher value'
   );
   const waitStore = store[storeName];
@@ -45,7 +45,7 @@ export default (store, {
     const { actions } = waitStore.getState();
     waitStore.dispatch(clearActions());
 
-    if (count < limit) {
+    if (count < maxIterations) {
       if (actions.length) {
         return Promise.all(actions.map(mapAction))
           .then((results) => {
@@ -64,7 +64,7 @@ export default (store, {
     warning(
       actions.length,
       'Callback completed with unresolved actions. Specify a higher ' +
-      'value for the `limit` option or reduce the depth of async ' +
+      'value for the `maxIterations` option or reduce the depth of async ' +
       'action creator calls.'
     );
 
