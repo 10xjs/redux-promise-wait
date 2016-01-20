@@ -32,8 +32,8 @@ export default (store, callback, {
 }) => (...args) =>{
   warning(
     maxIterations < 2,
-    'A `maxIterations` value of less than 2 will not wait for any promises to ' +
-    'resolve. Specify a higher value'
+    'A `maxIterations` value of less than 2 will not wait for any actions to ' +
+    'resolve. Specify a higher value.'
   );
   const waitStore = store[storeName];
 
