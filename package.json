@@ -6,23 +6,34 @@
   "repository": "NealGranger/redux-render",
   "scripts": {
     "compile": "./node_modules/.bin/babel -s inline -d . src/",
+    "lint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
     "prepiblish": "npm run compile",
-    "dev": "npm run compile -- -w"
+    "dev": "npm run compile -- -w",
+    "spec": "NODE_ENV=test ./node_modules/.bin/mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
+    "test": "npm run lint && npm run spec"
   },
   "dependencies": {
     "is-promise": "^2.1.0"
   },
   "peerDependencies": {
-    "redux": "~3.0.5"
+    "redux": ">=2.0.0"
   },
   "devDependencies": {
+    "adana-cli": "^0.1.0",
+    "adana-dump": "^0.1.0",
+    "adana-format-lcov": "^0.1.1",
     "babel-cli": "^6.4.0",
     "babel-core": "^6.3.26",
-    "babel-preset-metalab": "^0.1.2",
+    "babel-preset-metalab": "^0.1.4",
+    "chai": "^3.4.0",
     "eslint": "^1.10.3",
     "eslint-config-metalab": "^1.0.0-rc.4",
     "eslint-plugin-filenames": "^0.2.0",
     "eslint-plugin-import": "^0.11.0",
-    "eslint-plugin-react": "^3.15.0"
+    "eslint-plugin-react": "^3.15.0",
+    "mocha": "^2.3.3",
+    "redux": "^3.0.5",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
   }
 }
