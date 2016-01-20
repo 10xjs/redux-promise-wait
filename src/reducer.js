@@ -1,22 +1,26 @@
-import { ADD_PROMISE, CLEAR_PROMISES } from './action-types';
+import { combineReducers } from 'redux';
+import { ADD_ACTION, CLEAR_ACTIONS, STATS } from './action-types';
 
-export default (state = { promises: [] }, action) => {
+const actions = (state = [], action) => {
   const map = {
-    [ADD_PROMISE]: (state, { payload }) => {
-      const { promises } = state;
-      return {
-        ...state,
-        promises: [ ...promises, payload ],
-      };
-    },
-    [CLEAR_PROMISES]: (state) => {
-      return {
-        ...state,
-        promises: [],
-      };
-    },
+    [ADD_ACTION]: (state, { payload }) => [ ...state, payload ],
+    [CLEAR_ACTIONS]: () => [],
     default: (state) => state,
   };
 
   return (map[action.type] || map.default)(state, action);
 };
+
+const stats = (state = [], action) => {
+  const map = {
+    [STATS]: (state, { payload }) => [ ...state, payload ],
+    default: (state) => state,
+  };
+
+  return (map[action.type] || map.default)(state, action);
+};
+
+export default combineReducers({
+  actions,
+  stats,
+});

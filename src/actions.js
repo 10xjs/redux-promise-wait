@@ -1,10 +1,18 @@
-import { CLEAR_PROMISES, ADD_PROMISE } from './action-types';
+import { CLEAR_ACTIONS, ADD_ACTION, STATS } from './action-types';
 
-export const clearPromises = () => ({
-  type: CLEAR_PROMISES,
+export const clearActions = () => ({
+  type: CLEAR_ACTIONS,
 });
 
-export const addPromise = (promise) => ({
-  type: ADD_PROMISE,
-  payload: promise,
+export const addAction = (action, promise) => ({
+  type: ADD_ACTION,
+  payload: {
+    action,
+    promise,
+  },
+});
+
+export const stats = (stats) => ({
+  type: STATS,
+  payload: stats,
 });

@@ -1,38 +1,74 @@
-import { clearPromises } from './actions';
-import { extractWaitState } from './enhancer';
+import { clearActions, stats } from './actions';
+
+const warning = (condition, message) => {
+  if (process.env.NODE_ENV !== 'production' && condition) {
+    /* eslint-disable no-console */
+    console.warn(`[redux-wait] ${message}`);
+    /* eslint-enable no-console */
+  }
+};
+
+const mapAction = ({ promise, action }) =>promise.then(
+  (result) => ({ action, result }),
+  (error) => ({ action, error }),
+);
 
 /**
  * Create a function that awaits all promises in the `redux-wait` store.
  *
  * @function
  *
+ * @param {Object} store A redux store enhanced with `redux-wait`.
+ *
+ * @param {Number} options.limit The maximum number callback iterations.
+ *
  * @param {Function} callback A callback function.
- *
- * @param {Object} store A `redux-wait` store.
- *
- * @param {Number} options.maxIterations The maximum callback iterations.
  *
  * @returns {Function} A function that returns a promise.
  */
-export default (callback, store, { maxIterations = 1 }) => (...args) =>{
-  const iterate = (count = 0) => {
-    const renderResult = callback(...args);
-    const { promises } = extractWaitState(store.getState());
-    store.dispatch(clearPromises());
+export default (store, {
+  limit = 2,
+  storeName = 'waitStore',
+}, callback) => (...args) =>{
+  warning(
+    limit < 2,
+    'A `limit` value of less than 2 will not wait for any promises to ' +
+    'resolve. Specify a higher value'
+  );
+  const waitStore = store[storeName];
 
-    return Promise.all(promises).then(actions => {
-      if (!actions.length || count === maxIterations) {
-        if (actions.length) {
-          /* eslint-disable no-console */
-          console.warn(`Callback completed with unresolved promises. Specify a
-            higher value for the \`additionalRenders\` parameter or reduce the
-            depth of async action creators.`);
-          /* eslint-enable no-console */
-        }
-        return renderResult;
+  const iterate = (count = 0) => {
+    const start = Date.now();
+
+    const renderResult = callback(...args);
+
+    const { actions } = waitStore.getState();
+    waitStore.dispatch(clearActions());
+
+    if (count < limit) {
+      if (actions.length) {
+        return Promise.all(actions.map(mapAction))
+          .then((results) => {
+            const duration = Date.now() - start;
+            waitStore.dispatch(stats({
+              results,
+              duration,
+            }));
+            return iterate(count + 1);
+          });
       }
-      return iterate(count + 1);
-    });
+
+      return Promise.resolve(renderResult);
+    }
+
+    warning(
+      actions.length,
+      'Callback completed with unresolved actions. Specify a higher ' +
+      'value for the `limit` option or reduce the depth of async ' +
+      'action creator calls.'
+    );
+
+    return Promise.resolve(renderResult);
   };
 
   return iterate();
