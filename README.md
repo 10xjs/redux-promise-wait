@@ -40,7 +40,7 @@ const enhancedCreateStore = compose(
 export default enhancedCreateStore;
 ```
 
-The iterator returned from `createIterator()` repeatedly fires a callback function until the Redux store state settles. A call to `createIterator()` takes 3 parameters, an Redux Wait enhanced `store`, an iterator `callback` function, and an optional `config`.
+The iterator returned from `createIterator()` repeatedly fires a callback function until the Redux store state settles. A call to `createIterator()` takes 3 parameters, an iterator `callback` function, a Redux Wait enhanced `store`, and an optional `config`.
 
 > Redux Wait has no dependency on React and it is actually not coupled to React in any way. It's up to you to handle any React specific code in your iterator callback.
 

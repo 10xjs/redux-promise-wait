@@ -18,18 +18,22 @@ const mapAction = ({ promise, action }) =>promise.then(
  *
  * @function
  *
+ * @param {Function} callback A callback function.
+ *
  * @param {Object} store A redux store enhanced with `redux-wait`.
  *
  * @param {Number} options.maxIterations The maximum number callback iterations.
  *
- * @param {Function} callback A callback function.
+ * @param {Number} options.storeName The name of the property containing the
+ * `waitStore` on the base store object, this should match the same config
+ * option provided to `waitEnhancer()`.
  *
  * @returns {Function} A function that returns a promise.
  */
-export default (store, callback, {
+export default (callback, store, {
   maxIterations = 2,
   storeName = 'waitStore',
-}) => (...args) =>{
+}) => (...args) => {
   warning(
     maxIterations < 2,
     'A `maxIterations` value of less than 2 will not wait for any actions to ' +
