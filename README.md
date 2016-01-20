@@ -2,6 +2,9 @@
 
 A store enhancer for [Redux](https://github.com/rackt/redux).
 
+[![Build Status](https://travis-ci.org/nealgranger/redux-wait.svg?branch=master)](https://travis-ci.org/nealgranger/redux-wait)
+[![Coverage Status](https://coveralls.io/repos/github/nealgranger/redux-wait/badge.svg?branch=master)](https://coveralls.io/github/nealgranger/redux-wait?branch=master)
+
 Collect and await the resolution of asynchronous actions dispatched from a single event.
 
 ### Installation
