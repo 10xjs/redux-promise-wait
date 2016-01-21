@@ -1,6 +1,6 @@
 # Redux Promise Wait
 
-An indispensable tool for rendering [Redux](https://github.com/rackt/redux) apps on the server.
+An indispensable tool for rendering Redux apps on the server.
 
 [![Build Status](https://travis-ci.org/nealgranger/redux-promise-wait.svg?branch=master)](https://travis-ci.org/nealgranger/redux-promise-wait)
 [![Coverage Status](https://coveralls.io/repos/github/nealgranger/redux-promise-wait/badge.svg?branch=master)](https://coveralls.io/github/nealgranger/redux-promise-wait?branch=master)
@@ -8,7 +8,7 @@ An indispensable tool for rendering [Redux](https://github.com/rackt/redux) apps
 ### Installation
 
 ```
-npm install --save redux redux-promise-wait
+npm install --save redux-promise-wait
 ```
 
 ## Examples
