@@ -6,7 +6,7 @@
   "repository": "nealdranger/redux-promise-wait",
   "scripts": {
     "build": "./node_modules/.bin/babel -s inline -d . src/",
-    "lint": "./node_modules/.bin/eslint --ignore-path .gitignore .",
+    "lint": "./node_modules/.bin/eslint src/",
     "prepublish": "npm run build",
     "dev": "npm run build -- -w",
     "spec": "NODE_ENV=test ./node_modules/.bin/mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
