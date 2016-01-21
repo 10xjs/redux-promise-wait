@@ -1,2 +1,2 @@
-export { default as createIterator } from './iterator';
+export { default as createWait } from './create-wait';
 export { default as waitEnhancer } from './enhancer';
