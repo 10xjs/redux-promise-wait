@@ -1,7 +1,7 @@
 {
   "name": "redux-promise-wait",
   "version": "0.1.0",
-  "author": "NealGranger",
+  "author": "Neal Granger",
   "license": "CC0-1.0",
   "repository": "nealdranger/redux-promise-wait",
   "scripts": {
