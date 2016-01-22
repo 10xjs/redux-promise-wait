@@ -20,7 +20,7 @@ Redux Promise Wait is used to run a callback function repeatedly until the Redux
 Redux Promise Wait includes two components which work together to achieve this goal.
 
  - `waitEnhancer()` creates Redux Store enhancer which collects promises from dispatched actions.
- - `createWait()` creates a function that returns a promise that resolves with all of the collected promises.
+ - `reduxPromiseWait()` creates a function that returns a promise that resolves with all of the collected promises.
 
 **1. Enhanced your Redux Store**
 
@@ -29,7 +29,7 @@ The enhancer returned from `waitEnhancer()` observes calls to `store.dispatch` t
 *`store/create-store.js`*
 
 ```js
-import { waitEnhancer } from 'redux-promise-wait';
+import waitEnhancer from 'redux-promise-wait/enhancer';
 import { createStore, applyMiddleware, compose } from 'redux';
 import promiseMiddleware from 'redux-promise';
 
@@ -43,7 +43,7 @@ export default enhancedCreateStore;
 
 **2. Create an Iterator**
 
-A call to `createWait()` takes 3 parameters, a `callback` function, a Redux Promise Wait enhanced `store`, and an optional `config`. It returns a function that returns a promise and that takes the same arguments as your callback.
+A call to `reduxPromiseWait()` takes 3 parameters, a `callback` function, a Redux Promise Wait enhanced `store`, and an optional `config`. It returns a function that returns a promise and that takes the same arguments as your callback.
 
 > Redux Promise Wait has no dependency on React and it is actually not coupled to React in any way. It's up to you to handle any React specific code in your wait function callback.
 
@@ -51,7 +51,7 @@ A call to `createWait()` takes 3 parameters, a `callback` function, a Redux Prom
 
 ```js
 import React from 'react';
-import { createWait } from 'redux-promise-wait';
+import reduxPromiseWait from 'redux-promise-wait';
 import { renderToString } from 'react-dom/server';
 
 import reducer from '../reducer';
@@ -65,7 +65,11 @@ const store = enhancedCreateStore(reducer);
 const renderCallback = () => renderToString(<Root store={store}/>);
 
 // Create a wait function.
-const renderWait = createWait(renderCallback, store, { maxInterations = 3 });
+const renderWait = reduxPromiseWait(
+  renderCallback,
+  store,
+  { maxIterations = 3 }
+);
 
 ...
 ```
@@ -101,7 +105,7 @@ import http from 'http';
 import { routeActions } from 'redux-simple-router';
 
 import React from 'react';
-import { createWait } from 'redux-promise-wait';
+import reduxPromiseWait from 'redux-promise-wait';
 import { renderToString } from 'react-dom/server';
 
 import reducer from '../reducer';
@@ -121,7 +125,11 @@ const server = http.createServer((req, res) {
   store.dispatch(routeActions.go(req.url));
 
   // Create a wait function.
-  const renderWait = createWait(renderCallback, store, { maxInterations = 3 });
+  const renderWait = reduxPromiseWait(
+    renderCallback,
+    store,
+    { maxIterations = 3 }
+  );
   
   renderWait({ store }).then((markup) => {
     const state = store.getState();

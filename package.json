@@ -40,5 +40,5 @@
     "sinon-chai": "^2.8.0",
     "watch": "^0.17.1"
   },
-  "browser": "browser.js"
+  "main": "create-wait.js"
 }
