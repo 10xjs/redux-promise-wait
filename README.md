@@ -29,7 +29,7 @@ The enhancer returned from `waitEnhancer()` observes calls to `store.dispatch` t
 *`store/create-store.js`*
 
 ```js
-import { waitEnhancer } from 'redux-promise-wait';
+import waitEnhancer from 'redux-promise-wait/enhancer';
 import { createStore, applyMiddleware, compose } from 'redux';
 import promiseMiddleware from 'redux-promise';
 
@@ -51,7 +51,7 @@ A call to `createWait()` takes 3 parameters, a `callback` function, a Redux Prom
 
 ```js
 import React from 'react';
-import { createWait } from 'redux-promise-wait';
+import createWait from 'redux-promise-wait/create-wait';
 import { renderToString } from 'react-dom/server';
 
 import reducer from '../reducer';
@@ -101,7 +101,7 @@ import http from 'http';
 import { routeActions } from 'redux-simple-router';
 
 import React from 'react';
-import { createWait } from 'redux-promise-wait';
+import createWait from 'redux-promise-wait/create-wait';
 import { renderToString } from 'react-dom/server';
 
 import reducer from '../reducer';
