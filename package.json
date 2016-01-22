@@ -39,6 +39,5 @@
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "watch": "^0.17.1"
-  },
-  "browser": "browser.js"
+  }
 }
