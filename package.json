@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "author": "Neal Granger",
   "license": "CC0-1.0",
-  "repository": "nealdranger/redux-promise-wait",
+  "repository": "nealgranger/redux-promise-wait",
   "scripts": {
-    "build": "./node_modules/.bin/babel -s inline -d . src/",
-    "lint": "./node_modules/.bin/eslint src/",
+    "build": "babel -s inline -d . src/",
+    "lint": "eslint .",
+    "lint:dev": "eslint . || true",
     "prepublish": "npm run build",
-    "dev": "npm run build -- -w",
-    "spec": "NODE_ENV=test ./node_modules/.bin/mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
-    "test": "npm run lint && npm run spec"
+    "dev": "watch 'npm run test:dev' src/ test/ & npm run build -- -w",
+    "spec": "NODE_ENV=test mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
+    "spec:dev": "NODE_ENV=test mocha --compilers js:babel-core/register test/spec || true",
+    "test": "npm run lint && npm run spec",
+    "test:dev": "npm run lint:dev && npm run spec:dev"
   },
   "dependencies": {
     "is-promise": "^2.1.0"
@@ -34,6 +37,8 @@
     "mocha": "^2.3.3",
     "redux": "^3.0.5",
     "sinon": "^1.17.2",
-    "sinon-chai": "^2.8.0"
-  }
+    "sinon-chai": "^2.8.0",
+    "watch": "^0.17.1"
+  },
+  "browser": "browser.js"
 }
