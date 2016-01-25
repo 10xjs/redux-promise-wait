@@ -59,25 +59,6 @@ describe('enhancer',  () => {
     });
   });
 
-  describe('original store', () => {
-    it('should be available at `liftedStore`', () => {
-      expect(store.liftedStore).to.be.an.object;
-    });
-
-    it('should have the original dispatch', () => {
-      const promise = Promise.resolve();
-      const asyncAction = { type: 'TEST', payload: promise };
-
-      store.liftedStore.dispatch({ type: 'INCREMENT' });
-      expect(store.getState()).to.equal(1);
-
-      expect(store.waitStore.getState().actions).to.deep.equal([]);
-      store.liftedStore.dispatch(asyncAction);
-
-      expect(store.waitStore.getState().actions).to.deep.equal([]);
-    });
-  });
-
   describe('`storeName` option', () => {
     it('should set the name of the wait store', () => {
       const namedStore = enhancer({
