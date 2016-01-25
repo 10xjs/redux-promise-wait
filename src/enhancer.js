@@ -13,7 +13,6 @@ export default ({
 
     return {
       ...store,
-      liftedStore: store,
       [storeName]: waitStore,
       dispatch(action) {
         const promise = handleAction(action);

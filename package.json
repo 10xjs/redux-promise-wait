@@ -5,10 +5,10 @@
   "license": "CC0-1.0",
   "repository": "nealgranger/redux-promise-wait",
   "scripts": {
-    "build": "babel -s inline -d . src/",
-    "lint": "eslint .",
+    "build": "node_modules/.bin/babel -s inline -d . src/",
+    "lint": "node_modules/.bin/eslint .",
     "prepublish": "npm run build",
-    "spec": "NODE_ENV=test mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
+    "spec": "NODE_ENV=test node_modules/.bin/mocha --compilers js:babel-core/register -r adana-dump -R spec test/spec",
     "test": "npm run lint && npm run spec"
   },
   "dependencies": {
@@ -23,15 +23,15 @@
     "adana-format-lcov": "^0.1.1",
     "babel-cli": "^6.4.0",
     "babel-core": "^6.3.26",
-    "babel-preset-metalab": "^0.1.4",
+    "babel-preset-metalab": "^0.2.0",
     "chai": "^3.4.0",
     "eslint": "^1.10.3",
     "eslint-config-metalab": "^1.0.0-rc.4",
     "eslint-plugin-filenames": "^0.2.0",
     "eslint-plugin-import": "^0.11.0",
-    "eslint-plugin-react": "^3.15.0",
+    "eslint-plugin-react": "^3.16.1",
     "mocha": "^2.3.3",
-    "redux": "^3.0.5",
+    "redux": "^3.0.6",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
   }
