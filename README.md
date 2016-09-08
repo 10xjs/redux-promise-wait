@@ -65,7 +65,7 @@ const store = enhancedCreateStore(reducer);
 const renderCallback = () => renderToString(<Root store={store}/>);
 
 // Create a wait function.
-const renderWait = createWait(renderCallback, store, { maxInterations = 3 });
+const renderWait = createWait(renderCallback, store, { maxIterations = 3 });
 
 ...
 ```
